@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
-import Card from './common/Card';
-import CardSection from './common/CardSection';
+import { Card, CardSection, Input} from './common'
+// import Card from './common/Card';
+// import CardSection from './common/CardSection';
 
 class LoginForm extends Component {
     constructor(props){
