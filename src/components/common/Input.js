@@ -12,6 +12,7 @@ const Input = ({ label, securetxt, maxlen, keytype, value, onChangeText, placeHo
                 maxLength={maxlen}
                 autoCorrect={false}
                 placeholder={placeHolder}
+                placeholderTextColor={'#e0e2e1'}
                 multiline={false}
                 value={value}
                 onChangeText={onChangeText}
