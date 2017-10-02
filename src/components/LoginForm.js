@@ -1,25 +1,64 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Button } from 'react-native-elements';
-import { Card, CardSection, Input } from './common'
+import Toast from 'react-native-simple-toast';
+import { Card, CardSection, Input, Spinner } from './common'
 import firebase from 'firebase';
 
 class LoginForm extends Component {
-    state = { email: '', pass: '', error: '' };
+    state = { email: '', pass: '', error: '', loading: false };
 
 
 
 
     onLogin() {
-        this.setState({error:''})
+        this.setState({ error: '', loading: true })
         const { email, pass } = this.state;
-        firebase.auth().signInWithEmailAndPassword(email, pass).catch(() => {
-            firebase.auth().createUserWithEmailAndPassword(email, pass).catch(() => {
-                this.setState({ error: 'Password Wrong' });
+        firebase.auth().signInWithEmailAndPassword(email, pass)
+            .then(this.onLoginSuccess.bind(this))
+            .catch(() => {
+                firebase.auth().createUserWithEmailAndPassword(email, pass)
+                    .then(onRegister())
+                    .catch(this.onLoginFailed.bind(this))
             });
+    }
+
+    onLoginFailed() {
+        
+        this.setState({ error: 'Password Wrong', loading: false });
+    }
+    onLoginSuccess() {
+        Toast.show('You logged in Successfully!', Toast.LONG);
+        this.setState({
+            error: '',
+            loading: false,
+            email: '',
+            pass: ''
         });
     }
 
+    onRegister() {
+        Toast.show('You Registerd Successfully!', Toast.SHORT);
+
+    }
+
+    renderBtn() {
+        if (this.state.loading) {
+            return <Spinner size="small" />;
+        }
+        return (
+            <Button
+                iconRight={{ name: 'send', size: 32, color: 'white' }}
+                buttonStyle={{ backgroundColor: '#00b764', borderRadius: 10 }}
+                textStyle={{ textAlign: 'center' }}
+                fontSize={26}
+                title={`Login/Sign in`}
+                onPress={this.onLogin.bind(this)}
+            />
+        );
+
+
+    }
     render() {
         return (
             <Card>
@@ -40,14 +79,7 @@ class LoginForm extends Component {
                         value={this.state.pass} />
                 </CardSection>
                 <CardSection style={{ borderRadius: 10 }}>
-                    <Button
-                        iconRight={{ name: 'send', size: 32, color: 'white' }}
-                        buttonStyle={{ backgroundColor: '#00b764', borderRadius: 10 }}
-                        textStyle={{ textAlign: 'center' }}
-                        fontSize={26}
-                        title={`Login/Sign in`}
-                        onPress={this.onLogin.bind(this)}
-                    />
+                    {this.renderBtn()}
 
                 </CardSection>
                 <CardSection style={{ borderRadius: 10 }}>
